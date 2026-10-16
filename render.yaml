@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: acme-ledger-agent
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: AIPIPE_TOKEN
+        sync: false
+      - key: LEDGER_RATES_URL
+        sync: false
+      - key: LEDGER_EXPORT_URL
+        sync: false
