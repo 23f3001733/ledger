@@ -144,8 +144,8 @@ def rule_parse(q):
     else:
         return None
     # ---- which / top ----
-    g = re.search(r"\b(?:which|top\s*\d*|best|highest|largest|biggest|most|lowest|least|fewest|worst)\s+(?:\w+\s+){0,2}?(region|product|customer|month)s?\b", t) \
-        or re.search(r"\bwhat\s+(region|product|customer|month)s?\b", t)
+    g = re.search(r"\b(?:which|top\s*\d*|best|highest|largest|biggest|most|lowest|least|fewest|worst)[\s-]+(?:\w+[\s-]+){0,4}?(region|product|customer|month)s?\b", t) \
+        or re.search(r"\bwhat\b.*?\b(region|product|customer|month)s?\b", t)
     if g and g.group(1) == "customer" and spec["customer"]: g = None   # a specific customer was named
     if g:
         spec["group_by"] = g.group(1)
@@ -155,6 +155,9 @@ def rule_parse(q):
         if spec["group_by"] == "region": spec["region"] = None
         if spec["group_by"] == "product": spec["product"] = None
         if spec["group_by"] == "customer": spec["customer"] = None
+    if not spec["group_by"] and re.search(r"\b(top|best|most|which|what.*product|what.*region|what.*customer)\b", t):
+        return None
+            
     return spec
 
 def solve(q):
